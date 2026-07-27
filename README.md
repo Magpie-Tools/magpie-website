@@ -37,6 +37,7 @@ documentation artifact can be assembled separately.
 
 ## Related repositories
 
+- [Distribution and deployment](https://github.com/Kuucheen/magpie)
 - [Backend](https://github.com/Magpie-Tools/magpie-backend)
 - [Frontend](https://github.com/Magpie-Tools/magpie-frontend)
 - [Documentation](https://github.com/Magpie-Tools/magpie-docs)
