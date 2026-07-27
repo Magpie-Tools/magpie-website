@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
-SITE_DIR="$ROOT/website/homepage"
+SITE_DIR="$ROOT"
 DIST_DIR="$SITE_DIR/dist"
 WORKTREE="$ROOT/.gh-pages"
 BRANCH="gh-pages"
