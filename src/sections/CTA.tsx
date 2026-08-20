@@ -72,7 +72,7 @@ export default function CTA() {
               className="bg-[#3fa37a] hover:bg-[#44b381] text-white px-8 py-6 text-base font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#3fa37a]/25"
               asChild
             >
-              <a href="https://github.com/Kuucheen/magpie" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/Magpie-Tools/magpie" target="_blank" rel="noopener noreferrer">
                 <Github className="w-5 h-5 mr-2" />
                 Star on GitHub
               </a>

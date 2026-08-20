@@ -97,7 +97,7 @@ export default function Navigation() {
               className="border-white/10 bg-white/4 text-white hover:border-white/16 hover:bg-white/8"
               asChild
             >
-              <a href="https://github.com/Kuucheen/magpie" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/Magpie-Tools/magpie" target="_blank" rel="noopener noreferrer">
                 <Github className="mr-2 h-4 w-4" />
                 GitHub
               </a>
@@ -158,7 +158,7 @@ export default function Navigation() {
               className="w-full border-white/10 bg-white/4 text-white hover:border-white/16 hover:bg-white/8"
               asChild
             >
-              <a href="https://github.com/Kuucheen/magpie" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/Magpie-Tools/magpie" target="_blank" rel="noopener noreferrer">
                 <Github className="mr-2 h-4 w-4" />
                 GitHub
               </a>

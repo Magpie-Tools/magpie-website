@@ -3,17 +3,17 @@ import { Github, FileText, Scale, Heart, Shield } from 'lucide-react';
 const footerLinks = [
   {
     label: 'GitHub',
-    href: 'https://github.com/Kuucheen/magpie',
+    href: 'https://github.com/Magpie-Tools/magpie',
     icon: <Github className="w-4 h-4" />,
   },
   {
     label: 'Documentation',
-    href: 'https://github.com/Kuucheen/magpie#readme',
+    href: 'https://magpie.tools/docs/',
     icon: <FileText className="w-4 h-4" />,
   },
   {
     label: 'License',
-    href: 'https://github.com/Kuucheen/magpie/blob/master/LICENSE',
+    href: 'https://github.com/Magpie-Tools/magpie/blob/master/LICENSE',
     icon: <Scale className="w-4 h-4" />,
   },
 ];
@@ -64,7 +64,7 @@ export default function Footer({ onManageAnalytics }: FooterProps) {
             <div className="flex items-center justify-center md:justify-end gap-1 mt-1">
               <span>Open source under</span>
               <a 
-                href="https://github.com/Kuucheen/magpie/blob/master/LICENSE"
+                href="https://github.com/Magpie-Tools/magpie/blob/master/LICENSE"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#3fa37a] hover:underline"
