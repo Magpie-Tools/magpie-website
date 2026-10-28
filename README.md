@@ -5,7 +5,7 @@ The React and Vite marketing website for
 
 ## Requirements
 
-- Node.js `20+`
+- Node.js `20.19+` or `22.12+`, as required by Vite 7
 - npm
 
 ## Development
