@@ -25,7 +25,6 @@ export default function Screens() {
       <div className="wrap">
         <div className="shots-head">
           <div>
-            <span className="kicker">Dashboard</span>
             <h2 id="screens-title" className="h2">
               One place for the whole team
             </h2>

@@ -150,7 +150,6 @@ export default function Walkthrough() {
   return (
     <section className="sec" id="how-it-works" aria-labelledby="walk-title">
       <div className="wrap">
-        <span className="kicker">How it works</span>
         <h2 id="walk-title" className="h2">
           From a proxy list to a working endpoint
         </h2>

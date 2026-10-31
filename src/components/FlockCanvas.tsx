@@ -7,21 +7,22 @@ import { useEffect, useRef, type PointerEvent } from 'react';
  */
 
 const ROW = 18;
-const FONT = '400 12px "IBM Plex Mono", ui-monospace, monospace';
-const LABEL_FONT = '400 12px "IBM Plex Mono", ui-monospace, monospace';
+const FONT = '400 12px "Geist Mono Variable", ui-monospace, monospace';
+const LABEL_FONT = '400 12px "Geist Mono Variable", ui-monospace, monospace';
 const SOURCE_GLYPHS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', ':'];
 const ALIVE_RATIO = 0.62;
 const MAX_PARTICLES = 420;
 
+/* Hero sits on --p-800; colours come from the magpie-frontend palette. */
 const COLOR = {
-  dim: 'rgba(249, 243, 240, 0.34)',
+  dim: 'rgba(249, 243, 240, 0.3)',
   cream: '#f9f3f0',
-  gate: 'rgba(141, 188, 170, 0.55)',
+  gate: 'rgba(140, 200, 181, 0.5)',
   gateHot: '#f9f3f0',
-  label: '#b9d6ca',
-  dead: '#f0a493',
+  label: '#8cc8b5',
+  dead: '#f8a5a5',
   out: 'rgba(249, 243, 240, 0.85)',
-  box: '#185641',
+  box: '#12302a',
 };
 
 type Phase = 'source' | 'alive' | 'dead' | 'out';
@@ -216,11 +217,13 @@ function draw(context: CanvasRenderingContext2D, scene: Scene) {
   const boxHeight = ROW + 10;
   const boxX = endpointX - boxWidth / 2;
   const boxY = centerY + ROW / 2 - boxHeight / 2;
+  context.beginPath();
+  context.roundRect(boxX + 0.5, boxY + 0.5, boxWidth - 1, boxHeight - 1, 7);
   context.fillStyle = scene.endpointPulse > 0 ? COLOR.cream : COLOR.box;
-  context.fillRect(boxX, boxY, boxWidth, boxHeight);
+  context.fill();
   context.strokeStyle = COLOR.cream;
   context.lineWidth = 1;
-  context.strokeRect(boxX + 0.5, boxY + 0.5, boxWidth - 1, boxHeight - 1);
+  context.stroke();
   context.fillStyle = scene.endpointPulse > 0 ? COLOR.box : COLOR.cream;
   context.fillText(label, endpointX, centerY + ROW / 2 + 1);
 

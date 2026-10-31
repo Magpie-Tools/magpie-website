@@ -14,7 +14,6 @@ export default function OpenSource() {
     <section className="sec sec-plume" aria-labelledby="oss-title">
       <div className="wrap os-grid">
         <div>
-          <span className="kicker">Open source · AGPL-3.0</span>
           <h2 id="oss-title" className="os-big">
             Your proxies, your servers, your code to read.
           </h2>
@@ -22,6 +21,7 @@ export default function OpenSource() {
             There is no hosted service and no account to create. You run the whole stack, and every line of it is on
             GitHub.
           </p>
+          <span className="os-license">Open source · AGPL-3.0</span>
         </div>
         <ul className="marks" aria-label="Repositories and community">
           {MARKS.map((mark) => (

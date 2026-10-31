@@ -18,7 +18,6 @@ export default function Capabilities() {
     <section className="sec sec-tint" aria-labelledby="cap-title">
       <div className="wrap cap-grid">
         <div>
-          <span className="kicker">Under the hood</span>
           <h2 id="cap-title" className="h2">
             Built for pools of millions
           </h2>

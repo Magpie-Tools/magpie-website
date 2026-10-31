@@ -24,7 +24,7 @@ export function Logo({ href = '/' }: { href?: string }) {
   return (
     <a href={href} className="logo" aria-label="Magpie home">
       <LogoMark />
-      <span className="logo-word">magpie</span>
+      <span className="logo-word">Magpie</span>
     </a>
   );
 }

@@ -64,7 +64,7 @@ export default function RotateIllustration() {
                       d={`M${endpointRight} ${middleY} C ${endpointRight + 20} ${middleY}, ${UPSTREAM_X - 20} ${y}, ${UPSTREAM_X} ${y}`}
                       fill="none"
                     />
-                    <rect
+                    <rect rx={6}
                       className={on ? 'rot-node rot-node-on' : 'rot-node'}
                       x={UPSTREAM_X + 0.5}
                       y={upstreamY(index) + 0.5}
@@ -80,11 +80,11 @@ export default function RotateIllustration() {
                   </g>
                 );
               })}
-              <rect className="rot-node" x={APP.x + 0.5} y={APP.y + 0.5} width={APP.w} height={APP.h} />
+              <rect rx={6} className="rot-node" x={APP.x + 0.5} y={APP.y + 0.5} width={APP.w} height={APP.h} />
               <text className="rot-text" x={APP.x + APP.w / 2} y={middleY + 4} textAnchor="middle">
                 app
               </text>
-              <rect className="rot-node rot-node-on" x={ENDPOINT.x + 0.5} y={ENDPOINT.y + 0.5} width={ENDPOINT.w} height={ENDPOINT.h} />
+              <rect rx={6} className="rot-node rot-node-on" x={ENDPOINT.x + 0.5} y={ENDPOINT.y + 0.5} width={ENDPOINT.w} height={ENDPOINT.h} />
               <text className="rot-text rot-text-on" x={ENDPOINT.x + ENDPOINT.w / 2} y={middleY + 4} textAnchor="middle">
                 :20000
               </text>
