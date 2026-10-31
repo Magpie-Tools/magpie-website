@@ -10,7 +10,7 @@ import Footer from './sections/Footer';
 import Hero from './sections/Hero';
 import OpenSource from './sections/OpenSource';
 import Screens from './sections/Screens';
-import Walkthrough from './sections/Walkthrough';
+import Alerts from './sections/Alerts';
 
 export default function App() {
   const beaconToken = import.meta.env.VITE_CLOUDFLARE_BEACON_TOKEN?.trim();
@@ -34,7 +34,7 @@ export default function App() {
       </div>
       <main id="main">
         <Features />
-        <Walkthrough />
+        <Alerts />
         <Capabilities />
         <Screens />
         <OpenSource />
