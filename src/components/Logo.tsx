@@ -1,0 +1,30 @@
+interface LogoMarkProps {
+  className?: string;
+  title?: string;
+}
+
+export function LogoMark({ className, title }: LogoMarkProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 512 512"
+      fill="currentColor"
+      role={title ? 'img' : undefined}
+      aria-hidden={title ? undefined : true}
+      aria-label={title}
+    >
+      <path d="M147 42C141 35 130 40 131 50L153 216Q155 230 168 237L253 280Q268 288 280 276L327 231Q333 225 327 219Z" />
+      <path d="M312 36C306 29 295 35 298 45L332 159Q336 172 347 180L372 197Q378 201 384 196L404 181Q410 176 405 169Z" />
+      <path d="M42 438Q31 445 38 455Q42 462 51 459L279 366C343 375 393 346 422 302L450 261Q453 256 459 254L493 244Q502 241 493 236L453 216C431 197 409 199 391 217L345 263Z" />
+    </svg>
+  );
+}
+
+export function Logo({ href = '/' }: { href?: string }) {
+  return (
+    <a href={href} className="logo" aria-label="Magpie home">
+      <LogoMark />
+      <span className="logo-word">magpie</span>
+    </a>
+  );
+}

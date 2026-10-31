@@ -1,104 +1,80 @@
-import { Github, FileText, Scale, Heart, Shield } from 'lucide-react';
-
-const footerLinks = [
-  {
-    label: 'GitHub',
-    href: 'https://github.com/Magpie-Tools/magpie',
-    icon: <Github className="w-4 h-4" />,
-  },
-  {
-    label: 'Documentation',
-    href: 'https://magpie.tools/docs/',
-    icon: <FileText className="w-4 h-4" />,
-  },
-  {
-    label: 'License',
-    href: 'https://github.com/Magpie-Tools/magpie/blob/master/LICENSE',
-    icon: <Scale className="w-4 h-4" />,
-  },
-];
+import { Logo } from '../components/Logo';
+import { LINKS } from '../content';
 
 interface FooterProps {
   onManageAnalytics?: () => void;
 }
 
+const COLUMNS = [
+  {
+    title: 'product',
+    links: [
+      { label: 'Documentation', href: LINKS.docs },
+      { label: 'First proxy', href: LINKS.firstProxy },
+      { label: 'Installation', href: LINKS.installation },
+      { label: 'Deployment', href: LINKS.deployment },
+    ],
+  },
+  {
+    title: 'community',
+    links: [
+      { label: 'GitHub', href: LINKS.github },
+      { label: 'Discord', href: LINKS.discord },
+      { label: 'Issues', href: LINKS.issues },
+      { label: 'License', href: LINKS.license },
+    ],
+  },
+];
+
 export default function Footer({ onManageAnalytics }: FooterProps) {
   return (
-    <footer className="relative w-full py-12 bg-[#0e0e0e] border-t border-[#1a1a1a]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center">
-              <img 
-                src="/magpie-light-green.svg" 
-                alt="Magpie" 
-                className="w-7 h-7 object-contain"
-              />
-            </div>
-            <div>
-              <div className="text-lg font-semibold text-white">Magpie</div>
-              <div className="text-xs text-[#a0a0a0]">Multi-user AIO Proxy Manager</div>
-            </div>
+    <footer className="foot">
+      <div className="wrap">
+        <div className="foot-grid">
+          <div>
+            <Logo href="#top" />
+            <p>Self-hosted proxy management for you and your team.</p>
           </div>
-
-          {/* Links */}
-          <nav className="flex flex-wrap justify-center gap-6">
-            {footerLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-[#a0a0a0] hover:text-[#3fa37a] transition-colors duration-300"
-              >
-                {link.icon}
-                {link.label}
-              </a>
+          <div className="foot-cols">
+            {COLUMNS.map((column) => (
+              <div className="foot-col" key={column.title}>
+                <h2>{column.title}</h2>
+                <ul>
+                  {column.links.map((link) => {
+                    const external = link.href.startsWith('http');
+                    return (
+                      <li key={link.label}>
+                        <a
+                          href={link.href}
+                          target={external ? '_blank' : undefined}
+                          rel={external ? 'noopener noreferrer' : undefined}
+                        >
+                          {link.label}
+                        </a>
+                      </li>
+                    );
+                  })}
+                  {column.title === 'community' && onManageAnalytics ? (
+                    <li>
+                      <button type="button" className="foot-btn" onClick={onManageAnalytics}>
+                        Privacy choices
+                      </button>
+                    </li>
+                  ) : null}
+                </ul>
+              </div>
             ))}
-          </nav>
-
-          {/* Copyright */}
-          <div className="text-sm text-[#a0a0a0] text-center md:text-right">
-            <div>&copy; {new Date().getFullYear()} Magpie</div>
-            <div className="flex items-center justify-center md:justify-end gap-1 mt-1">
-              <span>Open source under</span>
-              <a 
-                href="https://github.com/Magpie-Tools/magpie/blob/master/LICENSE"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#3fa37a] hover:underline"
-              >
-                AGPL-3.0
-              </a>
-            </div>
           </div>
         </div>
-
-        {/* Bottom bar */}
-        <div className="mt-8 pt-6 border-t border-[#1a1a1a] text-center">
-          <p className="text-xs text-[#606060] flex items-center justify-center gap-1">
-            Crafted with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> by 
-            <a 
-              href="https://github.com/Kuucheen"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#a0a0a0] hover:text-[#3fa37a] transition-colors"
-            >
+        <div className="foot-base">
+          <span>© {new Date().getFullYear()} Magpie · AGPL-3.0</span>
+          <span>
+            made by{' '}
+            <a href={LINKS.author} target="_blank" rel="noopener noreferrer">
               Kuucheen
-            </a>
+            </a>{' '}
             and contributors
-          </p>
-          {onManageAnalytics ? (
-            <button
-              type="button"
-              onClick={onManageAnalytics}
-              className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#2a2a2a] px-4 py-2 text-xs text-[#a0a0a0] transition-colors duration-300 hover:border-[#3fa37a]/50 hover:text-white"
-            >
-              <Shield className="h-3.5 w-3.5" />
-              Privacy choices
-            </button>
-          ) : null}
+          </span>
         </div>
       </div>
     </footer>
