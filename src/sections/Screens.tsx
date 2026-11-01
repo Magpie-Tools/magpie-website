@@ -2,10 +2,11 @@ import { useState, type KeyboardEvent } from 'react';
 import Frame from '../components/Frame';
 
 const SCREENS = [
-  { id: 'dashboard', label: 'dashboard', alt: 'Magpie dashboard with alive proxy count, proxies per hour chart, and recent check history' },
-  { id: 'proxy-list', label: 'proxies', alt: 'Magpie proxy list with health, protocol, and reputation columns' },
-  { id: 'proxy-detail', label: 'proxy detail', alt: 'Magpie proxy detail page with latency and check history' },
-  { id: 'rotating-proxies', label: 'rotating', alt: 'Magpie rotating proxy form with protocol, transport, and reputation filters' },
+  { id: 'dashboard', label: 'dashboard', alt: 'Magpie dashboard with alive, total, and scraped proxy counts, a proxies per hour chart against the proxy limit, and recent check history' },
+  { id: 'proxy-list', label: 'proxies', alt: 'Magpie proxy list with status, tags, response time, type, country, reputation, and last check columns' },
+  { id: 'add-proxies', label: 'import', alt: 'Magpie add proxies dialog with tags, paste and file import, and an import summary' },
+  { id: 'scrape-sources', label: 'scraping', alt: 'Magpie scrape sources with proxy counts, alive proxies, health bars, and scrape status per source' },
+  { id: 'alerts', label: 'alerts', alt: 'Magpie alert rules with an open latency incident, pool capacity status, and a form for adding a rule' },
 ] as const;
 
 export default function Screens() {
