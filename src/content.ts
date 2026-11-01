@@ -12,10 +12,8 @@ export const LINKS = {
 
 export type OperatingSystem = 'macos' | 'linux' | 'windows';
 
-const UNIX_INSTALL =
-  'curl -fsSL https://raw.githubusercontent.com/Magpie-Tools/magpie/refs/heads/master/scripts/install.sh | bash';
-const WINDOWS_INSTALL =
-  'iwr -useb https://raw.githubusercontent.com/Magpie-Tools/magpie/refs/heads/master/scripts/install.ps1 | iex';
+const UNIX_INSTALL = 'curl -fsSL https://magpie.tools/install.sh | bash';
+const WINDOWS_INSTALL = 'irm https://magpie.tools/install.ps1 | iex';
 
 export const INSTALL: Record<OperatingSystem, { label: string; command: string; prompt: string }> = {
   macos: { label: 'macOS', command: UNIX_INSTALL, prompt: '$' },
