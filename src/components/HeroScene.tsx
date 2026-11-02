@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { createScene, maskStars, PALETTE, pokeScene, renderScene, stepScene, type Rect, type Scene } from './heroScene';
+import { createScene, PALETTE, pokeScene, renderScene, setTextAreas, stepScene, type Rect, type Scene } from './heroScene';
 
 /* CSS pixels per art pixel. */
 const pixelSize = (width: number) => (width < 768 ? 3 : 4);
@@ -11,7 +11,8 @@ const TEXT_CLEARANCE = 20;
 function measureText(hero: Element, canvas: HTMLCanvasElement, scale: number): Rect[] {
   const origin = canvas.getBoundingClientRect();
   const boxes: DOMRect[] = [];
-  for (const element of hero.querySelectorAll('.head > *, .hero-copy > *')) {
+  // The command box is opaque, so only its OS tabs need a quiet backdrop.
+  for (const element of hero.querySelectorAll('.head > *, .hero-copy > h1, .hero-copy > p, .hero-copy .os-tab')) {
     if (element.tagName === 'H1' || element.tagName === 'P') {
       // Measure each line of text, not the full-width block.
       const range = document.createRange();
@@ -81,7 +82,7 @@ export default function HeroScene() {
 
     const maskText = () => {
       if (!scene || !container.parentElement) return;
-      maskStars(scene, measureText(container.parentElement, canvas, scale));
+      setTextAreas(scene, measureText(container.parentElement, canvas, scale));
       paint();
     };
 

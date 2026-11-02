@@ -28,6 +28,9 @@ const TOP = PALETTE.length - 1;
 /** --p-900, the background of the section below the hero. */
 const BOTTOM_LEVEL = 2;
 const FADE_ROWS = 16;
+/* Behind the hero text the sky settles on flat --p-950, with no clouds or stars. */
+const CALM_LEVEL = 1;
+const CALM_FALLOFF = 24;
 
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((value) => (value + 0.5) / 16);
 
@@ -200,6 +203,8 @@ export interface Scene {
   base: Float32Array;
   cloudTex: Float32Array;
   cloudGain: Float32Array;
+  /** 1 behind the hero text, fading to 0 around it. */
+  calm: Float32Array;
   cloudTop: number;
   cloudRows: number;
   overlayAt: Int32Array;
@@ -430,6 +435,7 @@ export function createScene(width: number, height: number, seed = 7): Scene {
     width,
     height,
     idx: new Uint8Array(size),
+    calm: new Float32Array(size),
     base,
     cloudTex,
     cloudGain,
@@ -536,13 +542,31 @@ function spawnPass(scene: Scene) {
   }
 }
 
-/** Hide every star inside one of `rects` (the text on top of the scene). */
-export function maskStars(scene: Scene, rects: Rect[]) {
-  for (const star of scene.stars) {
-    const x = star.i % scene.width;
-    const y = Math.floor(star.i / scene.width);
-    star.hidden = rects.some((rect) => x >= rect.x && x < rect.x + rect.w && y >= rect.y && y < rect.y + rect.h);
+/**
+ * Quiet the scene behind `rects` (the hero text): flat dark sky inside them,
+ * dithering back to the normal scene over CALM_FALLOFF pixels around them.
+ */
+export function setTextAreas(scene: Scene, rects: Rect[]) {
+  const { width, height, calm } = scene;
+  calm.fill(0);
+  for (const rect of rects) {
+    const right = rect.x + rect.w - 1;
+    const bottom = rect.y + rect.h - 1;
+    const y0 = Math.max(0, rect.y - CALM_FALLOFF);
+    const y1 = Math.min(height - 1, bottom + CALM_FALLOFF);
+    const x0 = Math.max(0, rect.x - CALM_FALLOFF);
+    const x1 = Math.min(width - 1, right + CALM_FALLOFF);
+    for (let y = y0; y <= y1; y += 1) {
+      const dy = Math.max(rect.y - y, 0, y - bottom);
+      for (let x = x0; x <= x1; x += 1) {
+        const dx = Math.max(rect.x - x, 0, x - right);
+        const weight = 1 - smoothstep(0, CALM_FALLOFF, Math.hypot(dx, dy));
+        const i = y * width + x;
+        if (weight > calm[i]!) calm[i] = weight;
+      }
+    }
   }
+  for (const star of scene.stars) star.hidden = calm[star.i]! > 0.02;
 }
 
 /** Advance the simulation by `dt` seconds. */
@@ -655,7 +679,7 @@ function drawSprite(scene: Scene, art: Sprite, x: number, y: number, facing: 1 |
 
 /** Rasterise the current state into `scene.idx`. */
 export function renderScene(scene: Scene) {
-  const { width, height, base, idx, cloudTex, cloudGain, cloudTop, cloudRows, time } = scene;
+  const { width, height, base, calm, idx, cloudTex, cloudGain, cloudTop, cloudRows, time } = scene;
   const shift = Math.floor(scene.cloudShift);
   const cloudEnd = cloudTop + cloudRows;
 
@@ -666,10 +690,12 @@ export function renderScene(scene: Scene) {
     const texRow = (y - cloudTop) * width;
     for (let x = 0; x < width; x += 1) {
       let value = base[row + x]!;
+      const quiet = calm[row + x]!;
       if (inClouds) {
-        const gain = cloudGain[texRow + x]!;
+        const gain = cloudGain[texRow + x]! * (1 - quiet);
         if (gain > 0) value += gain * cloudTex[texRow + ((x + shift) % width)]!;
       }
+      if (quiet > 0 && value > CALM_LEVEL) value -= (value - CALM_LEVEL) * quiet;
       const level = Math.floor(value + BAYER[bayerRow + (x & 3)]!);
       idx[row + x] = level < 0 ? 0 : level > TOP ? TOP : level;
     }
