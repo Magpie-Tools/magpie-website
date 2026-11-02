@@ -1,4 +1,4 @@
-import FlockCanvas from '../components/FlockCanvas';
+import HeroScene from '../components/HeroScene';
 import InstallCommand from '../components/InstallCommand';
 import { Logo } from '../components/Logo';
 import { LINKS } from '../content';
@@ -6,6 +6,7 @@ import { LINKS } from '../content';
 export default function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
+      <HeroScene />
       <header className="wrap head">
         <Logo />
         <nav className="nav" aria-label="Main">
@@ -33,8 +34,6 @@ export default function Hero() {
           Needs Docker. Read the <a href={LINKS.installation}>installation guide</a> before exposing Magpie publicly.
         </p>
       </div>
-
-      <FlockCanvas />
     </section>
   );
 }

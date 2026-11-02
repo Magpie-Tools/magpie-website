@@ -6,7 +6,7 @@ export default function FAQ() {
       <div className="wrap faq-grid">
         <div>
           <h2 id="faq-title" className="h2">
-            Questions
+            FAQ
           </h2>
           <p className="lead">
             More in the <a href="/docs/faq">documentation FAQ</a> or on <a href={LINKS.discord}>Discord</a>.

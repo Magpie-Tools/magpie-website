@@ -196,7 +196,7 @@ export default function Alerts() {
 
         <div ref={ref} className="al-frame">
           <Frame
-            caption="Production HTTP pool · usable routes"
+            caption=""
             captionEnd={
               <button type="button" className="al-replay" onClick={replay}>
                 replay

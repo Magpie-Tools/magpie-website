@@ -8,6 +8,7 @@ import FAQ from './sections/FAQ';
 import Features from './sections/Features';
 import Footer from './sections/Footer';
 import Hero from './sections/Hero';
+import HowItWorks from './sections/HowItWorks';
 import OpenSource from './sections/OpenSource';
 import Screens from './sections/Screens';
 import Alerts from './sections/Alerts';
@@ -33,6 +34,7 @@ export default function App() {
         <Hero />
       </div>
       <main id="main">
+        <HowItWorks />
         <Features />
         <Alerts />
         <Capabilities />
