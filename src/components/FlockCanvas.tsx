@@ -1,7 +1,7 @@
 import { useEffect, useRef, type PointerEvent } from 'react';
 
 /*
- * Hero illustration: proxies drift in from sources on the left, pass the
+ * "How it works" illustration: proxies drift in from sources on the left, pass the
  * checker, and the live ones converge on a single rotating endpoint.
  * Click or tap to scrape a burst of new proxies.
  */
@@ -13,7 +13,7 @@ const SOURCE_GLYPHS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', ':
 const ALIVE_RATIO = 0.62;
 const MAX_PARTICLES = 420;
 
-/* Hero sits on --p-800; colours come from the magpie-frontend palette. */
+/* The section sits on --p-900; colours come from the magpie-frontend palette. */
 const COLOR = {
   dim: 'rgba(249, 243, 240, 0.3)',
   cream: '#f9f3f0',
@@ -49,6 +49,13 @@ interface Scene {
   alive: number;
 }
 
+/* Left edge of the .wrap content box, so labels line up with the heading. */
+function contentEdge(width: number) {
+  if (width < 640) return 20;
+  if (width < 1024) return 32;
+  return Math.max(48, Math.round((width - 1248) / 2));
+}
+
 function layout(scene: Scene) {
   const { width, height } = scene;
   const compact = width < 640;
@@ -58,7 +65,7 @@ function layout(scene: Scene) {
     gateX: Math.round(width * (compact ? 0.42 : 0.47)),
     endpointX: Math.round(width * (compact ? 0.76 : 0.8)),
     centerY: Math.round((44 + height - 40) / 2 / ROW) * ROW,
-    edge: compact ? 20 : 48,
+    edge: contentEdge(width),
   };
 }
 
