@@ -3,12 +3,15 @@
  * magpie-frontend green scale. Telegraph wires carry small packets of light,
  * magpies perch on them, and a click scatters the birds.
  *
- * The scene renders into a buffer of palette indices (one per art pixel). It
- * has no DOM dependencies; HeroScene.tsx paints the buffer onto a canvas.
+ * Shading is worked out in "levels" on the RAMP below (0 = darkest, 12 =
+ * cream). The scene renders into a buffer of indices into PALETTE, which adds
+ * SHADES - 1 in-between colours per step so ordered dithering only ever mixes
+ * near-identical shades and gradients stay soft. It has no DOM dependencies;
+ * HeroScene.tsx paints the buffer onto a canvas.
  */
 
 /** Dark-to-light ramp: a deep shade, the --p-950…--p-50 scale, then cream. */
-export const PALETTE = [
+const RAMP = [
   '#0b1d18',
   '#12302a',
   '#183e31',
@@ -24,12 +27,37 @@ export const PALETTE = [
   '#f9f3f0',
 ];
 
-const TOP = PALETTE.length - 1;
+const SHADES = 4;
+
+function expandRamp(ramp: string[]) {
+  const rgb = ramp.map((hex) => [1, 3, 5].map((at) => parseInt(hex.slice(at, at + 2), 16)));
+  const colours: string[] = [];
+  for (let step = 0; step < rgb.length - 1; step += 1) {
+    for (let shade = 0; shade < SHADES; shade += 1) {
+      const t = shade / SHADES;
+      const mixed = rgb[step]!.map((channel, c) => Math.round(channel + (rgb[step + 1]![c]! - channel) * t));
+      colours.push(`#${mixed.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`);
+    }
+  }
+  colours.push(ramp[ramp.length - 1]!);
+  return colours;
+}
+
+export const PALETTE = expandRamp(RAMP);
+
+/** Brightest ramp level. */
+const TOP = RAMP.length - 1;
+const TOP_SHADE = PALETTE.length - 1;
+/** Palette index of a ramp level. */
+const shade = (level: number) => Math.min(TOP_SHADE, Math.round(level * SHADES));
 /** --p-900, the background of the section below the hero. */
 const BOTTOM_LEVEL = 2;
 const FADE_ROWS = 16;
-/* Behind the hero text the sky settles on flat --p-950, with no clouds or stars. */
+/* Behind the hero text the scene dims toward --p-950 and loses its stars and
+ * most of its clouds, fading back in over CALM_FALLOFF pixels. */
 const CALM_LEVEL = 1;
+const CALM_DIM = 0.4;
+const CALM_CLOUDS = 0.75;
 const CALM_FALLOFF = 24;
 
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((value) => (value + 0.5) / 16);
@@ -54,7 +82,7 @@ function sprite(rows: string[], ax: number, ay: number): Sprite {
   rows.forEach((row, y) => {
     for (let x = 0; x < row.length; x += 1) {
       const level = INK[row[x]!];
-      if (level !== undefined) px[y * w + x] = level;
+      if (level !== undefined) px[y * w + x] = shade(level);
     }
   });
   return { w, h, ax, ay, px };
@@ -215,7 +243,9 @@ export interface Scene {
   birds: Bird[];
   pulses: Pulse[];
   birdTarget: number;
+  /** Rows that passing magpies fly along; kept below the hero text. */
   flyBand: [number, number];
+  horizon: number;
   time: number;
   cloudShift: number;
   nextPulse: number;
@@ -442,7 +472,7 @@ export function createScene(width: number, height: number, seed = 7): Scene {
     cloudTop,
     cloudRows,
     overlayAt: Int32Array.from(overlay.keys()),
-    overlayLevel: Uint8Array.from(overlay.values()),
+    overlayLevel: Uint8Array.from(overlay.values(), shade),
     stars,
     wires,
     slots,
@@ -450,6 +480,7 @@ export function createScene(width: number, height: number, seed = 7): Scene {
     pulses: [],
     birdTarget: clamp(Math.round(width / 55), 2, Math.min(9, slots.length)),
     flyBand: [Math.max(8, cloudTop + 6), Math.max(12, horizon - 30)],
+    horizon,
     time: 0,
     cloudShift: random() * width,
     nextPulse: 0,
@@ -502,9 +533,10 @@ function spawnArrival(scene: Scene) {
   const slot = freeSlot(scene);
   if (!slot) return;
   slot.taken = true;
-  const fromLeft = scene.random() < 0.35;
-  const x = fromLeft ? -12 : scene.width + 12;
-  const y = Math.max(6, slot.y - 30 - scene.random() * 40);
+  // Perches are on the right, so birds fly in from that side, clear of the text.
+  const fromLeft = false;
+  const x = scene.width + 12;
+  const y = Math.max(6, slot.y - 20 - scene.random() * 25);
   scene.birds.push({
     state: 'arriving',
     x,
@@ -526,7 +558,7 @@ function spawnPass(scene: Scene) {
   const count = 1 + Math.floor(scene.random() * 3);
   for (let n = 0; n < count; n += 1) {
     const x = (fromLeft ? -14 : scene.width + 14) + (fromLeft ? -1 : 1) * n * (14 + scene.random() * 10);
-    const birdY = y + (scene.random() - 0.5) * 10;
+    const birdY = y + (scene.random() - 0.5) * 4;
     scene.birds.push({
       state: 'passing',
       x,
@@ -542,10 +574,7 @@ function spawnPass(scene: Scene) {
   }
 }
 
-/**
- * Quiet the scene behind `rects` (the hero text): flat dark sky inside them,
- * dithering back to the normal scene over CALM_FALLOFF pixels around them.
- */
+/** Quiet the scene behind `rects` (the hero text); see CALM_LEVEL. */
 export function setTextAreas(scene: Scene, rects: Rect[]) {
   const { width, height, calm } = scene;
   calm.fill(0);
@@ -567,6 +596,11 @@ export function setTextAreas(scene: Scene, rects: Rect[]) {
     }
   }
   for (const star of scene.stars) star.hidden = calm[star.i]! > 0.02;
+
+  // Passing magpies cross the full width, so keep them under the lowest text.
+  const textBottom = rects.reduce((lowest, rect) => Math.max(lowest, rect.y + rect.h), 0);
+  const high = scene.horizon - 6;
+  scene.flyBand = [Math.min(high - 2, Math.max(scene.flyBand[0], textBottom + 6)), high];
 }
 
 /** Advance the simulation by `dt` seconds. */
@@ -692,26 +726,26 @@ export function renderScene(scene: Scene) {
       let value = base[row + x]!;
       const quiet = calm[row + x]!;
       if (inClouds) {
-        const gain = cloudGain[texRow + x]! * (1 - quiet);
+        const gain = cloudGain[texRow + x]! * (1 - quiet * CALM_CLOUDS);
         if (gain > 0) value += gain * cloudTex[texRow + ((x + shift) % width)]!;
       }
-      if (quiet > 0 && value > CALM_LEVEL) value -= (value - CALM_LEVEL) * quiet;
-      const level = Math.floor(value + BAYER[bayerRow + (x & 3)]!);
-      idx[row + x] = level < 0 ? 0 : level > TOP ? TOP : level;
+      if (quiet > 0 && value > CALM_LEVEL) value -= (value - CALM_LEVEL) * quiet * CALM_DIM;
+      const index = Math.floor(value * SHADES + BAYER[bayerRow + (x & 3)]!);
+      idx[row + x] = index < 0 ? 0 : index > TOP_SHADE ? TOP_SHADE : index;
     }
   }
 
   for (const star of scene.stars) {
     const twinkle = 0.5 + 0.5 * Math.sin(time * star.rate + star.phase);
     if (star.hidden || twinkle < 0.3) continue;
-    if (idx[star.i]! > 3) continue;
-    idx[star.i] = Math.min(TOP, star.level + (twinkle > 0.85 ? 2 : 0));
+    if (idx[star.i]! > shade(3)) continue;
+    idx[star.i] = shade(star.level + (twinkle > 0.85 ? 2 : 0));
   }
 
   const { overlayAt, overlayLevel } = scene;
   for (let n = 0; n < overlayAt.length; n += 1) idx[overlayAt[n]!] = overlayLevel[n]!;
 
-  const trail = [TOP, 10, 8, 6];
+  const trail = [TOP, 10, 8, 6].map(shade);
   for (const pulse of scene.pulses) {
     const points = scene.wires[pulse.wire]!;
     const head = Math.floor(pulse.pos);

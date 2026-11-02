@@ -366,7 +366,7 @@ a:not([class]):hover {
 
 .install {
   width: 100%;
-  max-width: 1040px;
+  max-width: 560px;
 }
 
 .os {
@@ -581,6 +581,16 @@ a:not([class]):hover {
 
 .hero .install-note {
   color: var(--p-50);
+}
+
+/* The sky behind the copy is --p-950, so lift the command box off it. */
+.hero .os-tab[aria-selected='true'],
+.hero .cmd {
+  background: var(--p-800);
+}
+
+.hero .cmd {
+  box-shadow: 0 8px 24px rgba(11, 29, 24, 0.35);
 }
 
 @media (max-width: 767px) {
