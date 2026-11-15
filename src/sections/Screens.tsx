@@ -2,11 +2,11 @@ import { useState, type KeyboardEvent } from 'react';
 import Frame from '../components/Frame';
 
 const SCREENS = [
-  { id: 'dashboard', label: 'dashboard', alt: 'Magpie dashboard with alive, total, and scraped proxy counts, a proxies per hour chart against the proxy limit, and recent check history' },
-  { id: 'proxy-list', label: 'proxies', alt: 'Magpie proxy list with status, tags, response time, type, country, reputation, and last check columns' },
-  { id: 'add-proxies', label: 'import', alt: 'Magpie add proxies dialog with tags, paste and file import, and an import summary' },
-  { id: 'scrape-sources', label: 'scraping', alt: 'Magpie scrape sources with proxy counts, alive proxies, health bars, and scrape status per source' },
-  { id: 'alerts', label: 'alerts', alt: 'Magpie alert rules with an open latency incident, pool capacity status, and a form for adding a rule' },
+  { id: 'dashboard', label: 'dashboard', alt: 'Magpie dashboard with alive, total, and scraped proxy counts, a proxy inventory chart against the proxy limit, and recent checks' },
+  { id: 'proxy-list', label: 'proxies', alt: 'Magpie proxy list with status, tags, latency, type, country, reputation, and last check columns' },
+  { id: 'proxy-details', label: 'details', alt: 'Magpie proxy details with hourly response times, an hourly availability grid, network and connection details, and a reputation score' },
+  { id: 'workspace', label: 'workspace', alt: 'Magpie workspace overview with monthly check and scrape allowance usage, a projected usage chart, plan details, and route capacity' },
+  { id: 'alerts', label: 'alerts', alt: 'Magpie alert destinations for Discord, Slack, webhook, and email' },
 ] as const;
 
 export default function Screens() {
